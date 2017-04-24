@@ -1,1 +1,1 @@
-# cs381
+# CS 381- Intro to fundamentals
