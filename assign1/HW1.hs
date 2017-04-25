@@ -15,17 +15,17 @@ type Name = String
 
 --Define abstract syntax
 data Cmd = Pen Mode
-		 | Moveto Pos Pos
-		 | Def Name Pars Cmd
-		 | Call Name Vals
-		 | Seq [Cmd]
+	| Moveto Pos Pos
+	| Def Name Pars Cmd
+	| Call Name Vals
+	| Seq [Cmd]
 	deriving Show
 
 data Mode = Up
-		  | Down
+	| Down
 
 data Pos = R1 Num
-		 | R2 Name
+	| R2 Name
 
 type Pars = [Name]
 type Vals = [Num]
