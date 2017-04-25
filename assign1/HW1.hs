@@ -31,10 +31,10 @@ type Pars = [Name]
 type Vals = [Num]
 
 --Example usage: R1 3
+--Example usage: R2 "Hello World"
 instance Show Pos where
 	show (R1 a) = show a
-	--Not sure how to get this to work
-	--show (R2 a) = show a
+	show (R2 a) = show a
 
 --Example usage: Pen Up
 instance Show Mode where
