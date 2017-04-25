@@ -6,9 +6,14 @@ Define the abstract syntax for Mini Logo as a Haskell
 data type
 -}
 
+--Disregard built in name "Num"
+import Prelude hiding (Num)
+
+--Set data types
 type Num = Int
 type Name = String
 
+--Define abstract syntax
 data Cmd = Pen Mode
 		 | Moveto Pos Pos
 		 | Def Name Pars Cmd
@@ -22,6 +27,16 @@ data Mode = Up
 data Pos = R1 Num
 		 | R2 Name
 
-data Pars = [Name]
+type Pars = [Name]
+type Vals = [Num]
 
-data Vals = [Num]
+--Example usage: R1 3
+instance Show Pos where
+	show (R1 a) = show a
+	--Not sure how to get this to work
+	--show (R2 a) = show a
+
+--Example usage: Pen Up
+instance Show Mode where
+	show Up = "!Up!"
+	show Down = "!Down!"
