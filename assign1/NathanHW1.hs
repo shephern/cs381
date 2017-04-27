@@ -50,8 +50,7 @@ as a Haskell data type
 --Num defined above
 
 --Define abstract syntax
-data Circuit = Con Gates Links
-            
+data Circuit = Con Gates Links      
 
 data Gates = GCon [(Num, GateFN)]
 
@@ -60,13 +59,17 @@ data GateFN = And
             | Xor
             | Not
 
-data Links = LCon [[Num, Num, Num, Num]]
+data Links = LCon [((Num, Num), (Num, Num))]
 
 {-
 Q2 b
 Represent half adder circuit as Haskell Data type value
 -}
-HalfAdder = C (GCon [(1, Xor), (2, And)])
-              ([[1,1,2,1], [1,2,2,2]])
+halfAdder = Con (GCon [(1, Xor), (2, And)])
+            (LCon [((1,1),(2,1)), ((1,2),(2,2))])
 
+{-
+Q2 c
+Write PPrint for circuit
+-}
 
