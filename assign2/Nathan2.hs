@@ -23,14 +23,15 @@ type Stack = [Int]
 type D = Stack -> Stack
 
 --Semantic Definition
-Stack s = []
 
 sem :: Prog -> D
-     sem [] d = d
-     sem (x:xs) d = sem xs (semCmd x d)
+sem [] s = s
+sem (x:xs) s = sem xs (semCmd x s)
 
 semCmd :: Cmd -> D
-     semCmd (LD i d) = i : d
-     semCmd (ADD d) = sum(take 2 d) : d
-     semCmd (MULT d) = product(take 2 d) : d
-     semCmd (DUP d) = (head d) : d
+semCmd (LD i) s = (i : s)
+semCmd ADD s = (sum(take 2 s) : s)
+semCmd MULT s = (product(take 2 s) : s)
+semCmd DUP s = ((head s) : s)
+
+
