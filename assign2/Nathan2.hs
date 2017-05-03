@@ -20,7 +20,7 @@ data Cmd = LD Int
 --Type Definition
 type Stack = [Int]
 
-type D = Maybe Stack -> Stack
+type D = Stack -> Stack
 
 --Semantic Definition
 
@@ -28,17 +28,19 @@ sem :: Prog -> D
 sem [] s = s
 sem (x:xs) s = sem xs (semCmd x s)
 
-semCmd :: Cmd -> Maybe D
-semCmd (LD i) s = Just (i : s)
-semCmd ADD s 
-        | length s >= 2 = Just (sum(take 2 s) : s)
-        | otherwise     = Nothing
-semCmd MULT s 
-        | length s >= 2 = Just (product(take 2 s) : s
-        | otherwise     = Nothing
-semCmd DUP s 
-        | length s >= 1 = Just ((head s) : s)
-        | otherwise     = Nothing
+semCmd :: Cmd -> D
+semCmd (LD i) s = (i : s)
+semCmd ADD s = case length s of
+        0 -> error("ADD ERROR")
+        1 -> error("ADD ERROR")
+        _ -> (sum(take 2 s) : s)
+semCmd MULT s = case length s of
+        0 -> error("MULT ERROR")
+        1 -> error("MULT ERROR")
+        _ -> (product(take 2 s) : s)
+semCmd DUP s = case length s of
+        0 -> error("DUP ERROR")
+        _ -> ((head s) : s)
 
 p::Prog
 p = [LD 3,DUP,ADD,DUP,MULT]
