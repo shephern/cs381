@@ -6,4 +6,5 @@
   <title>Mini Logo Result Viewer</title>
   <desc>A set of line segments</desc>
   <rect x="10" y="10" width="1180" height="1080"        fill="none" stroke="red" /> <path d="M 50 1050 L 250 850" stroke="blue" stroke-width="5" />
+<path d="M 550 550 L 550 150" stroke="blue" stroke-width="5" />
 </svg>
