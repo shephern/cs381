@@ -55,31 +55,31 @@ macroCMD :: Cmd -> SavedMacros
 macroCMD (DEF str cmdSeq) = str : macroList
 -}
 
-type D = Stack -> Maybe Stack
+type D = Maybe Stack -> Maybe Stack
 
 --Semantic Definition
 
-sem :: Prog -> D
-sem [] s = (Just s)
---sem (x:xs) s = sem xs (semCmd x s)
-
 semCmd :: Cmd -> D
-semCmd (LD i) s = Just (i : s)
-semCmd ADD s = case length s of
+semCmd (LD i) (Just s) = Just (i : s)
+semCmd ADD (Just s) = case length s of
         0 -> Nothing
         1 -> Nothing
         _ -> Just (sum(take 2 s) : drop 2 s)
-semCmd MULT s = case length s of
+semCmd MULT (Just s) = case length s of
         0 -> Nothing
         1 -> Nothing
         _ -> Just (product(take 2 s) : drop 2 s)
-semCmd DUP s = case length s of
+semCmd DUP (Just s) = case length s of
         0 -> Nothing
         _ -> Just ((head s) : s)
 
+sem :: Prog -> D
+sem [] (Just s) = (Just s)
+sem (x:xs) (Just s) = (sem xs (semCmd x (Just s)))
+
 --Must be used so that GHCi can show the [Int]
 eval :: Prog -> Maybe Stack
-eval pro = (sem pro [])
+eval pro = (sem pro (Just []))
 
 --Defined test cases
 p1::Prog
