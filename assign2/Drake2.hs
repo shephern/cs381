@@ -10,11 +10,11 @@ module Drake2 where
 
 --Abstract syntax
 type Prog = [Cmd]
-type MacroCmds = [String]
-macroList = []
+type SavedMacros = [String]
+macroList = ["myMacro"] --Check if macros exist here
 
-checkMacroExists :: String -> MacroCmds -> Bool
-checkMacroExists str arr = elem str arr
+checkMacroExists :: String -> SavedMacros -> Bool
+checkMacroExists str arr = elem str arr 
 
 data Cmd = LD Int
          | ADD
@@ -24,8 +24,9 @@ data Cmd = LD Int
          | CALL String
          deriving Show
 
-createMacro :: Cmd -> MacroCmds
-createMacro (DEF str cmdSeq) = str : macroList
+--Usage: macroCMD (DEF "SQR" [DUP, MULT])
+macroCMD :: Cmd -> SavedMacros
+macroCMD (DEF str cmdSeq) = str : macroList
 
 --Type Definition
 type Stack = [Int]
