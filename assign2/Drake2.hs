@@ -72,23 +72,27 @@ p6 = [LD 4,DUP,DUP,ADD,MULT,LD 7,ADD]
 
 type Macros = [(String,Prog)]
 type State = (Macros, Stack)
-type S = State -> Maybe State
+type S = Maybe State -> Maybe State
 
 semCmd2 :: Cmd -> S
-semCmd2 (LD i) s = Just (fst(s),i:snd(s))
-semCmd2 (ADD) s = case length (snd(s)) of
+semCmd2 (LD i) (Just s) = Just (fst(s),i:snd(s))
+semCmd2 (ADD) (Just s) = case length (snd(s)) of
         0 -> Nothing
         1 -> Nothing
         _ -> Just (fst(s), (head(snd(s)) + head(tail(snd(s))) : tail(tail(snd(s)))))
-semCmd2 (MULT) s = case length (snd(s)) of
+semCmd2 (MULT) (Just s) = case length (snd(s)) of
         0 -> Nothing
         1 -> Nothing
         _ -> Just (fst(s), (head(snd(s)) * head(tail(snd(s))) : tail(tail(snd(s)))))
-semCmd2 (DUP) s = case length (snd(s)) of
+semCmd2 (DUP) (Just s) = case length (snd(s)) of
         0 -> Nothing
         _ -> Just (fst(s), head(snd(s)) : snd(s))
-semCmd2 (DEF w p) s = Just (((w,p) : fst(s)), snd(s))
+semCmd2 (DEF w p) (Just s) = Just (((w,p) : fst(s)), snd(s))
 --semCmd2 (CALL w) s = Just (sem2 (lookup( w fst(s)) s))
 
 sem2 :: Prog -> S
-sem2 [] s = Just(s)
+sem2 [] (Just s) = (Just s)
+sem2 (x:xs) (Just s) = (sem2 xs (semCmd2 x (Just s)))
+{-sem2 (x:xs) (Just s) | (sem2 xs (semCmd2 x (Just s))) == Nothing = Nothing
+                     | otherwise = (sem2 xs (semCmd2 x (Just s)))
+sem2 _ _ = Nothing-}
