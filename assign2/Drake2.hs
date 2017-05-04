@@ -68,13 +68,10 @@ p5 = [LD 3,DUP,ADD,ADD]
 p6::Prog
 p6 = [LD 4,DUP,DUP,ADD,MULT,LD 7,ADD]
 
-{-
-Q2 a
--}
+{- Q2 Extending the Stack Language by Macros -}
 
 type Macros = [(String,Prog)]
 type State = (Macros, Stack)
-
 type S = State -> Maybe State
 
 semCmd2 :: Cmd -> S
