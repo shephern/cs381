@@ -1,5 +1,5 @@
 module Drake2 where
-
+import Data.Maybe
 {-
    - Haskell Assignment 2
    - CS 381, SP 2017
@@ -79,20 +79,30 @@ semCmd2 (LD i) (Just s) = Just (fst(s),i:snd(s))
 semCmd2 (ADD) (Just s) = case length (snd(s)) of
         0 -> Nothing
         1 -> Nothing
-        _ -> Just (fst(s), (head(snd(s)) + head(tail(snd(s))) : tail(tail(snd(s)))))
+        _ -> Just (fst(s), 
+                (head(snd(s)) + head(tail(snd(s))) : tail(tail(snd(s)))))
 semCmd2 (MULT) (Just s) = case length (snd(s)) of
         0 -> Nothing
         1 -> Nothing
-        _ -> Just (fst(s), (head(snd(s)) * head(tail(snd(s))) : tail(tail(snd(s)))))
+        _ -> Just (fst(s), 
+                (head(snd(s)) * head(tail(snd(s))) : tail(tail(snd(s)))))
 semCmd2 (DUP) (Just s) = case length (snd(s)) of
         0 -> Nothing
         _ -> Just (fst(s), head(snd(s)) : snd(s))
 semCmd2 (DEF w p) (Just s) = Just (((w,p) : fst(s)), snd(s))
---semCmd2 (CALL w) s = Just (sem2 (lookup( w fst(s)) s))
+semCmd2 (CALL w) (Just s) = case (lookup w (fst(s))) of
+        Nothing -> Nothing
+        Just p ->Just (fst(s), fromJust(sem p (snd(s))))
 
 sem2 :: Prog -> S
 sem2 [] (Just s) = (Just s)
 sem2 (x:xs) (Just s) = (sem2 xs (semCmd2 x (Just s)))
 {-sem2 (x:xs) (Just s) | (sem2 xs (semCmd2 x (Just s))) == Nothing = Nothing
                      | otherwise = (sem2 xs (semCmd2 x (Just s)))
-sem2 _ _ = Nothing-}
+sem2 _ _ = Nothing -}
+
+p7::Prog
+p7 = [LD 4, DEF "SQR" [DUP,MULT], CALL "SQR"]
+
+p8::Prog
+p8 = [LD 5, DEF "CUBE" [DUP,MULT,DUP,MULT], CALL "CUBE"]
