@@ -76,21 +76,21 @@ type S = State -> Maybe State
 --type S = Maybe State -> Maybe State
 
 semCmd2 :: Cmd -> S
-semCmd2 (LD i) (Just s) = Just (fst(s),i:snd(s))
-semCmd2 (ADD) (Just s) = case length (snd(s)) of
+semCmd2 (LD i) s = Just (fst(s),i:snd(s))
+semCmd2 (ADD) s = case length (snd(s)) of
         0 -> Nothing
         1 -> Nothing
         _ -> Just (fst(s), 
                 (head(snd(s)) + head(tail(snd(s))) : tail(tail(snd(s)))))
-semCmd2 (MULT) (Just s) = case length (snd(s)) of
+semCmd2 (MULT) s = case length (snd(s)) of
         0 -> Nothing
         1 -> Nothing
         _ -> Just (fst(s), 
                 (head(snd(s)) * head(tail(snd(s))) : tail(tail(snd(s)))))
-semCmd2 (DUP) (Just s) = case length (snd(s)) of
+semCmd2 (DUP) s = case length (snd(s)) of
         0 -> Nothing
         _ -> Just (fst(s), head(snd(s)) : snd(s))
-semCmd2 (DEF w p) (Just s) = Just (((w,p) : fst(s)), snd(s))
+semCmd2 (DEF w p) s = Just (((w,p) : fst(s)), snd(s))
 --semCmd2 (CALL w) (Just s) = case (lookup w (fst(s))) of
 --        Nothing -> Nothing
 --        (Just p) -> Just (fst(s), fromJust(sem p (snd(s))))
