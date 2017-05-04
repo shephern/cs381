@@ -11,11 +11,7 @@ module Drake2 where
 --Abstract syntax
 type Prog = [Cmd]
 type SavedMacros = [String]
---macroList = ["myMacro"] --Check if macros exist here
-{-
-checkMacroExists :: String -> SavedMacros -> Bool
-checkMacroExists str arr = elem str arr 
--}
+
 data Cmd = LD Int
          | ADD
          | MULT
@@ -26,39 +22,9 @@ data Cmd = LD Int
 
 --Type Definition
 type Stack = [Int]
-
-------------------------------------------------------------------------------------
-type Macros = [(String,Prog)]
-
-type State = (Macros, Stack)
-
-type S = State -> Maybe State
-
-semCmd2 :: Cmd -> S
-semCmd2 (LD i) s = Just (fst(s),i:snd(s))
-semCmd2 (ADD) s = Just (fst(s), (head(snd(s)) + head(tail(snd(s))) : tail(tail(snd(s)))))
---semCmd2 (ADD) (_) = Nothing
-semCmd2 (MULT) s = Just (fst(s), (head(snd(s)) * head(tail(snd(s))) : tail(tail(snd(s)))))
---semCmd2 (MULT) (_) = Nothing
-semCmd2 (DUP) s = Just (fst(s), head(snd(s)) : snd(s))
---semCmd2 (DUP) (_) = Nothing
-semCmd2 (DEF w p) s = Just (((w,p) : fst(s)), snd(s))
---semCmd2 (CALL w) s = Just (sem2 (lookup( w fst(s)) s))
-
-sem2 :: Prog -> S
-sem2 [] s = Just(s)
-------------------------------------------------------------------------------------
-
-{-
---Usage: macroCMD (DEF "SQR" [DUP, MULT])
-macroCMD :: Cmd -> SavedMacros
-macroCMD (DEF str cmdSeq) = str : macroList
--}
-
 type D = Maybe Stack -> Maybe Stack
 
 --Semantic Definition
-
 semCmd :: Cmd -> D
 semCmd (LD i) (Just s) = Just (i : s)
 semCmd ADD (Just s) = case length s of
@@ -102,29 +68,23 @@ p6 = [LD 4,DUP,DUP,ADD,MULT,LD 7,ADD]
 
 {-
 Q2 a
-Extend the abstract syntax to represent macro definitions and calls,
-that is, give a correspondingly changed data definition for Cmd.
 -}
 
-
-
-{-
-Q2 b
-Define a new type State to represent the state for the new language.
-The state includes the macro definitions and the stack. Please note
-that a macro definition can be represented by a pair whose first
-component is the macro name and the second component is the sequence
-of commands. Multiple macro definitions can be stored in a list. A
-type to represent macro definitions could thus be defined as follows.
 type Macros = [(String,Prog)]
--}
+type State = (Macros, Stack)
 
+type S = State -> Maybe State
 
+semCmd2 :: Cmd -> S
+semCmd2 (LD i) s = Just (fst(s),i:snd(s))
+semCmd2 (ADD) s = Just (fst(s), (head(snd(s)) + head(tail(snd(s))) : tail(tail(snd(s)))))
+--semCmd2 (ADD) (_) = Nothing
+semCmd2 (MULT) s = Just (fst(s), (head(snd(s)) * head(tail(snd(s))) : tail(tail(snd(s)))))
+--semCmd2 (MULT) (_) = Nothing
+semCmd2 (DUP) s = Just (fst(s), head(snd(s)) : snd(s))
+--semCmd2 (DUP) (_) = Nothing
+semCmd2 (DEF w p) s = Just (((w,p) : fst(s)), snd(s))
+--semCmd2 (CALL w) s = Just (sem2 (lookup( w fst(s)) s))
 
-{-
-Q2 c
-Define the semantics for the extended language as a function sem2. As
-in exercise 1, you probably want to define an auxiliary function
-semCmd2 for the semantics of individual operations.
--}
-
+sem2 :: Prog -> S
+sem2 [] s = Just(s)
