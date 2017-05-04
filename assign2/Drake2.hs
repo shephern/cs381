@@ -41,7 +41,9 @@ semCmd DUP (Just s) = case length s of
 
 sem :: Prog -> D
 sem [] (Just s) = (Just s)
-sem (x:xs) (Just s) = (sem xs (semCmd x (Just s)))
+sem (x:xs) (Just s) | (sem xs (semCmd x (Just s))) == Nothing = Nothing
+                    | otherwise = (sem xs (semCmd x (Just s)))
+sem _ _ = Nothing
 
 --Must be used so that GHCi can show the [Int]
 eval :: Prog -> Maybe Stack
