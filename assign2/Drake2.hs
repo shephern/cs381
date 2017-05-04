@@ -72,7 +72,8 @@ p6 = [LD 4,DUP,DUP,ADD,MULT,LD 7,ADD]
 
 type Macros = [(String,Prog)]
 type State = (Macros, Stack)
-type S = Maybe State -> Maybe State
+type S = State -> Maybe State
+--type S = Maybe State -> Maybe State
 
 semCmd2 :: Cmd -> S
 semCmd2 (LD i) (Just s) = Just (fst(s),i:snd(s))
@@ -90,13 +91,13 @@ semCmd2 (DUP) (Just s) = case length (snd(s)) of
         0 -> Nothing
         _ -> Just (fst(s), head(snd(s)) : snd(s))
 semCmd2 (DEF w p) (Just s) = Just (((w,p) : fst(s)), snd(s))
-semCmd2 (CALL w) (Just s) = case (lookup w (fst(s))) of
-        Nothing -> Nothing
-        Just p ->Just (fst(s), fromJust(sem p (snd(s))))
+--semCmd2 (CALL w) (Just s) = case (lookup w (fst(s))) of
+--        Nothing -> Nothing
+--        (Just p) -> Just (fst(s), fromJust(sem p (snd(s))))
 
 sem2 :: Prog -> S
-sem2 [] (Just s) = (Just s)
-sem2 (x:xs) (Just s) = (sem2 xs (semCmd2 x (Just s)))
+sem2 [] s = (Just s)
+--sem2 (x:xs) (Just s) = (sem2 xs (semCmd2 x (Just s)))
 {-sem2 (x:xs) (Just s) | (sem2 xs (semCmd2 x (Just s))) == Nothing = Nothing
                      | otherwise = (sem2 xs (semCmd2 x (Just s)))
 sem2 _ _ = Nothing -}
@@ -106,3 +107,6 @@ p7 = [LD 4, DEF "SQR" [DUP,MULT], CALL "SQR"]
 
 p8::Prog
 p8 = [LD 5, DEF "CUBE" [DUP,MULT,DUP,MULT], CALL "CUBE"]
+
+s1::State
+s1 = ([("SQR", [DUP,MULT])], [1,2,3,4])
