@@ -3,9 +3,9 @@ module P3 where
 --Used for drawing SVG lines.
 import System.IO
 
-data Cmd = Pen Mode
+data Cmdl = Pen Mode
          | MoveTo Int Int
-         | Seq Cmd Cmd
+         | Seq Cmdl Cmdl
 data Mode = Up | Down deriving Eq --modes. Derives Eq so they can compare.
 
 type State = (Mode,Int,Int)
@@ -26,7 +26,7 @@ ttrd (_,_,c) = c
 
 --((state),(lines))
 --((Mode,Int,Int),([(Int,Int,Int,Int)]))
-semS :: Cmd -> State -> (State,Lines)
+semS :: Cmdl -> State -> (State,Lines)
 semS (Pen m) s = ((m,tsnd s,ttrd s),([]))
 --Sets pen to Mode, doesn't move anything.
 semS (MoveTo i  i') s | tfst s == Up = ((tfst s,i,i'),([]))
@@ -35,10 +35,10 @@ semS (MoveTo i  i') s | tfst s == Up = ((tfst s,i,i'),([]))
 semS (Seq c c') s = let (s',l) = semS c s
                         (s'',l') = semS c' s'
                   in (s'',l++l')
---Runs two cmds.
+--Runs two Cmdls.
 
-sem' :: Cmd -> Lines
-sem' cmd = snd (semS (cmd) (Up,0,0))
+sem' :: Cmdl -> Lines
+sem' cmdl = snd (semS (cmdl) (Up,0,0))
 
 
 --Below this line is copied from SVG.hs
