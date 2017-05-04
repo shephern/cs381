@@ -11,11 +11,11 @@ module Drake2 where
 --Abstract syntax
 type Prog = [Cmd]
 type SavedMacros = [String]
-macroList = ["myMacro"] --Check if macros exist here
-
+--macroList = ["myMacro"] --Check if macros exist here
+{-
 checkMacroExists :: String -> SavedMacros -> Bool
 checkMacroExists str arr = elem str arr 
-
+-}
 data Cmd = LD Int
          | ADD
          | MULT
@@ -24,38 +24,62 @@ data Cmd = LD Int
          | CALL String
          deriving Show
 
---Usage: macroCMD (DEF "SQR" [DUP, MULT])
-macroCMD :: Cmd -> SavedMacros
-macroCMD (DEF str cmdSeq) = str : macroList
-
 --Type Definition
 type Stack = [Int]
 
-type D = Stack -> Stack
+------------------------------------------------------------------------------------
+type Macros = [(String,Prog)]
+
+type State = (Macros, Stack)
+
+type S = State -> Maybe State
+
+semCmd2 :: Cmd -> S
+semCmd2 (LD i) s = Just (fst(s),i:snd(s))
+semCmd2 (ADD) s = Just (fst(s), (head(snd(s)) + head(tail(snd(s))) : tail(tail(snd(s)))))
+--semCmd2 (ADD) (_) = Nothing
+semCmd2 (MULT) s = Just (fst(s), (head(snd(s)) * head(tail(snd(s))) : tail(tail(snd(s)))))
+--semCmd2 (MULT) (_) = Nothing
+semCmd2 (DUP) s = Just (fst(s), head(snd(s)) : snd(s))
+--semCmd2 (DUP) (_) = Nothing
+semCmd2 (DEF w p) s = Just (((w,p) : fst(s)), snd(s))
+--semCmd2 (CALL w) s = Just (sem2 (lookup( w fst(s)) s))
+
+sem2 :: Prog -> S
+sem2 [] s = Just(s)
+------------------------------------------------------------------------------------
+
+{-
+--Usage: macroCMD (DEF "SQR" [DUP, MULT])
+macroCMD :: Cmd -> SavedMacros
+macroCMD (DEF str cmdSeq) = str : macroList
+-}
+
+type D = Stack -> Maybe Stack
 
 --Semantic Definition
 
 sem :: Prog -> D
-sem [] s = s
-sem (x:xs) s = sem xs (semCmd x s)
+sem [] s = (Just s)
+--sem (x:xs) s = sem xs (semCmd x s)
 
 semCmd :: Cmd -> D
-semCmd (LD i) s = (i : s)
+semCmd (LD i) s = Just (i : s)
 semCmd ADD s = case length s of
-        0 -> error("ADD ERROR-- Cannot perform on empty list")
-        1 -> error("ADD ERROR-- Cannot perform on signleton list")
-        _ -> (sum(take 2 s) : drop 2 s)
+        0 -> Nothing
+        1 -> Nothing
+        _ -> Just (sum(take 2 s) : drop 2 s)
 semCmd MULT s = case length s of
-        0 -> error("MULT ERROR-- Cannot perform on empty list")
-        1 -> error("MULT ERROR-- Cannot perform on singleton list")
-        _ -> (product(take 2 s) : drop 2 s)
+        0 -> Nothing
+        1 -> Nothing
+        _ -> Just (product(take 2 s) : drop 2 s)
 semCmd DUP s = case length s of
-        0 -> error("DUP ERROR-- Cannot perform on empty list")
-        _ -> ((head s) : s)
+        0 -> Nothing
+        _ -> Just ((head s) : s)
 
 --Must be used so that GHCi can show the [Int]
-eval :: Prog -> Stack
-eval pro = sem pro []
+eval :: Prog -> Maybe Stack
+eval pro = (sem pro [])
 
 --Defined test cases
 p1::Prog
