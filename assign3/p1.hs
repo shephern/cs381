@@ -1,5 +1,5 @@
 module Part1 where
-{- Q1 - A Stack Language -}
+{- Q1 - A Stack Language-Type Error -}
 
 --Abstract syntax
 type Prog = [Cmd]
@@ -16,6 +16,10 @@ data Cmd = LD Int
 --Type Definition
 type Stack = [Int]
 type D = Maybe Stack -> Maybe Stack
+
+--New Type Definitions
+type Rank = Int
+type CmdRank = (Int, Int)
 
 --Semantic Definition
 semCmd :: Cmd -> D
@@ -51,6 +55,26 @@ sem _ _ = Nothing
 --Must be used so that GHCi can show the [Int]
 eval :: Prog -> Maybe Stack
 eval pro = (sem pro (Just []))
+
+--Rank Functionality
+rankC :: Cmd -> CmdRank
+rankC (LD _) = (0, 1)
+rankC ADD = (2, 1)
+rankC MULT = (2, 1)
+rankC DUP = (1, 2)
+rankC INC = (1, 1)
+rankC SWAP = (2, 2)
+rankC (POP i) = (i, 0)
+
+rankP :: Prog -> Maybe Rank
+rankP pro = rank pro (Just 0)
+
+rank :: Prog -> Maybe Rank -> Maybe Rank
+rank [] (Just r) = Just r
+rank (x:xs) (Just r) | (Just r) < Just(fst(rankC x)) = Nothing
+        | otherwise  = rank xs (Just(r - fst(rankC x) + snd(rankC x)))
+rank _ _ = Nothing
+
 
 --Defined test cases
 p1::Prog
