@@ -75,6 +75,13 @@ rank (x:xs) (Just r) | (Just r) < Just(fst(rankC x)) = Nothing
         | otherwise  = rank xs (Just(r - fst(rankC x) + snd(rankC x)))
 rank _ _ = Nothing
 
+typeChecker :: Prog -> Bool
+typeChecker p = (rankP p /= Nothing)
+
+
+semStatTC :: Prog -> Maybe Stack
+semStatTC p | typeChecker p = (sem p (Just []))
+            | otherwise = Nothing
 
 --Defined test cases
 p1::Prog
