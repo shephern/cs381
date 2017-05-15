@@ -47,8 +47,17 @@ ok _         = True
 type BBox = (Int, Int)
 
 bbox :: Shape -> BBox
+bbox shape = (maximum (map fst (sem shape)), maximum (map snd (sem shape)))
+{-
 bbox X = (1, 1)
 bbox (TD x y) = (fst(bbox x)*fst(bbox y), snd(bbox x)+snd(bbox y))
 bbox (LR x y) = (fst(bbox x)+fst(bbox y), snd(bbox y)*snd(bbox x))
+-}
 
 s4 = TD X (TD X (TD X X))
+s5 = TD (LR X X) (TD X (LR X X))
+
+rect :: Shape -> Maybe BBox
+rect shape = case fst(bbox shape)==snd(bbox shape) of
+		True -> Just(bbox shape)
+		False -> Nothing
