@@ -48,7 +48,7 @@ type BBox = (Int, Int)
 
 bbox :: Shape -> BBox
 bbox X = (1, 1)
-bbox (TD x y) = (fst(bbox x), snd(bbox y)+1)
-bbox (LR x y) = (fst(bbox x)+1, snd(bbox y))
+bbox (TD x y) = (fst(bbox x)*fst(bbox y), snd(bbox x)+snd(bbox y))
+bbox (LR x y) = (fst(bbox x)+fst(bbox y), snd(bbox y)*snd(bbox x))
 
 s4 = TD X (TD X (TD X X))
