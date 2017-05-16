@@ -35,15 +35,6 @@ p2 = sem s2
 s3 = TD (LR X X) X
 p3 = sem s3
 
-{-
-data Type = Int | BBox | TypeError
-            deriving (Eq, Show)
-
-ok :: Type -> Bool
-ok TypeError = False
-ok _         = True
--}
-
 type BBox = (Int, Int)
 
 bbox :: Shape -> BBox
@@ -54,10 +45,15 @@ bbox (TD x y) = (fst(bbox x)*fst(bbox y), snd(bbox x)+snd(bbox y))
 bbox (LR x y) = (fst(bbox x)+fst(bbox y), snd(bbox y)*snd(bbox x))
 -}
 
-s4 = TD X (TD X (TD X X))
-s5 = TD (LR X X) (TD X (LR X X))
-
 rect :: Shape -> Maybe BBox
 rect shape = case fst(bbox shape)==snd(bbox shape) of
 		True -> Just(bbox shape)
 		False -> Nothing
+
+s4 = TD X (TD X (TD X X
+
+s5 = TD (LR X X) (TD X (LR X X))
+s6 = TD X (TD X X)
+
+--hollow square:
+s7 = LR s5 s6
