@@ -2,7 +2,6 @@ module DrakeQ2 where
 
 {-
 Q2 a
-Define a type checker for the shape language as a Haskell function
 -}
 
 data Shape = X 
@@ -39,6 +38,10 @@ type BBox = (Int, Int)
 
 bbox :: Shape -> BBox
 bbox shape = (maximum (map fst (sem shape)), maximum (map snd (sem shape)))
+
+{-
+Q2 b
+-}
 
 count :: Eq a => a -> [a] -> Int
 count x = length . filter (==x)
