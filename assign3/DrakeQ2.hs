@@ -39,21 +39,36 @@ type BBox = (Int, Int)
 
 bbox :: Shape -> BBox
 bbox shape = (maximum (map fst (sem shape)), maximum (map snd (sem shape)))
-{-
-bbox X = (1, 1)
-bbox (TD x y) = (fst(bbox x)*fst(bbox y), snd(bbox x)+snd(bbox y))
-bbox (LR x y) = (fst(bbox x)+fst(bbox y), snd(bbox y)*snd(bbox x))
--}
+
+count :: Eq a => a -> [a] -> Int
+count x = length . filter (==x)
+
+checkFirst :: Shape -> Int -> Int -> Bool
+checkFirst shape 1 _ = True
+checkFirst shape x y
+	| (count x (map fst(sem shape)) == y) == True = checkFirst shape (x-1) y
+	| otherwise = False
+
+checkSecond :: Shape -> Int -> Int -> Bool
+checkSecond shape 1 _ = True
+checkSecond shape x y
+	| (count x (map snd(sem shape)) == y) == True = checkSecond shape (x-1) y
+	| otherwise = False
 
 rect :: Shape -> Maybe BBox
-rect shape = case fst(bbox shape)==snd(bbox shape) of
-		True -> Just(bbox shape)
-		False -> Nothing
+rect X = Just(1,1)
+rect shape
+	| (checkFirst shape (fst(bbox shape)) (snd(bbox shape)) ) && (checkSecond shape (snd(bbox shape)) (fst(bbox shape)) ) == True = Just(bbox shape)
+	| otherwise = Nothing
 
-s4 = TD X (TD X (TD X X
+--rectangle
+s4 = TD X (TD X (TD X X))
 
 s5 = TD (LR X X) (TD X (LR X X))
 s6 = TD X (TD X X)
 
 --hollow square:
 s7 = LR s5 s6
+
+--square
+s8 = TD (LR X X) (LR X X)
