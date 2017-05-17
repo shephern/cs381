@@ -1,5 +1,10 @@
 module HW3 where
-
+{- Assignment #3
+ - Completed by changle, shephern, seifertd
+ - Part 1: shephern
+ - Part 2: seifertd
+ - Part 3: changle
+ -}
 {- Q1 - A Stack Language-Type Error -}
 
 --Abstract syntax
