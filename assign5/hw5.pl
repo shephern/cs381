@@ -31,3 +31,7 @@ usage(X,Y) :- where(A,X), when(A,Y).
 
 %1c
 conflict(X,Y) :- where(X,A), where(Y,A), when(X,B), when(Y,B), X\=Y.
+
+%1d
+meet(X,Y) :- schedule(X,A,B), schedule(Y,A,B), X\=Y;
+			 schedule(X,A,C), schedule(Y,A,D), X\=Y, C\==D+1.
