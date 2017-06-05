@@ -1,14 +1,26 @@
 /* Exercise 2 */
 %a
-rdup([_|L],M) :- rdup(L,M).
-rdup([H|_],M) :- not(member(H,M)), append(M,H,M).
+
+rdup([],_).
+%Base case, the left list is empty, so done
+
+rdup([H|L],[H|M]) :- not(member(H,L)), rdup(L,M).
+%Add to M if it's unique, then remove head
+
+rdup([H|L],M) :- member(H,M), rdup(L,M).
+%If it's not unique, then ignore it and go
 
 %If just member, rdup. If not, append it then rdup.
+
 %b
+flat([],_).
+%If left is empty, done.
 
 flat([H|L],F) :- flat(H,F), flat(L,F).
-flat(L,F) :- append(F,L,F).
-flat([],F) :- F.
+%If the left variable is a list, recurse for both the left and the right.
+
+flat(H,[H|_]).
+%If the left variable isn't in a list, add it.
 
 %Append if no other list, else move in to the list.
 %Hopefully doing this right: First case is list, second is not. If list, just
@@ -18,9 +30,7 @@ flat([],F) :- F.
 suball([H|T]) :- H-1,suball(T).
 
 project(X,[_|Y],L) :- suball(X),project([X,Y,L]).
-project([X|T],[H|Y],L) :- X=0,append(L,H,L),project(T,Y,L).
-project(_,[],L) :- L.
-project([],_,L) :- L.
+project([0|T],[H|Y],[H|L]) :- project(T,Y,L).
 
 
 
