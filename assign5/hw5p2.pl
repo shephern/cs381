@@ -4,7 +4,7 @@
 rdup([],_).
 %Base case, the left list is empty, so done
 
-rdup([H|L],[H|M]) :- not(member(H,L)), rdup(L,M).
+rdup([H|L],[H|M]) :- not(member(H,M)), rdup(L,M).
 %Add to M if it's unique, then remove head
 
 rdup([H|L],M) :- member(H,M), rdup(L,M).
@@ -23,6 +23,10 @@ flat([H|L],[G|F]) :- flat(H,G), flat(L,F).
 
 flat(H,[H|_]).
 %If the left variable isn't in a list, add it.
+flatn([],[]).
+flatn([H|L],[H|M]) :- atom(H), flatn(L,M).
+flatn([I|L],M) :- flatn(I,M).
+%Adapted from stackoverflow, https://stackoverflow.com/questions/9059572/flatten-a-list-in-prolog
 
 %Append if no other list, else move in to the list.
 %Hopefully doing this right: First case is list, second is not. If list, just
