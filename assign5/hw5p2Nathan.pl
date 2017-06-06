@@ -35,10 +35,10 @@ project([H|X],[Y|T],L) :- H1 is H - 1,
 		      project([H1|X],T,L,[Y|T]).
 %Runs a helper 4-var function, with the 4th variable keeping the original list.
 
-project([1|X],[H|Y],[H|L],N) :- project(X,N,L).
+project([1|X],[H|_],[H|L],N) :- project(X,N,L).
 %Base case. If X is 1, append H to L, then go back to the original 3 var
 %variant sans the head of the first list.
 
-project([H|X],[J|Y],L,N) :- H1 is H - 1,
+project([H|X],[_|Y],L,N) :- H1 is H - 1,
 														project([H1|X],Y,L,N).
 %This traverses the head of the first list, subtracting 1 all the way down.
