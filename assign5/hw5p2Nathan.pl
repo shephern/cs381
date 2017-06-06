@@ -17,7 +17,7 @@ rdup([H|L],M) :- member(H,M), rdup(L,M).
 
 flat([],[]).
 flat([H|L],[H|M]) :- atom(H), flat(L,M).
-flat([I|L],M) :- flat(I,M).
+flat([I|_],M) :- flat(I,M).
 %Adapted from stackoverflow, https://stackoverflow.com/questions/9059572/flatten-a-list-in-prolog
 
 %Append if no other list, else move in to the list.
@@ -25,23 +25,26 @@ flat([I|L],M) :- flat(I,M).
 %Take off the head, otherwise append it. Then hopefully recursion goes next head
 
 %c
-project(_,[],_).
+project(_,[],_,_).
 project([],_,_).
 %Base cases, if either lists are empty, we're done.
 
-project([0|_],[H|_],[H|_]).
+
+project([H|X],[Y|T],L) :- H1 is H - 1,
+		      project([H1|X],T,L,[Y|T]).
+
+project([1|X],[H|Y],[H|L],N) :- project(X,N,L).
 %Another base case. If X is 0, add the current head of Y to L.
 
-project([X|T],[_|Y],L) :- X1 is X-1,
-		      X1 >= 0,
-		      project([X1|T],Y,L).
+project([H|X],[J|Y],L,N) :- H1 is H - 1,
+														project([H1|X],Y,L,N).
+
+
+/*project([X|_],[_|Y],L) :- X1 is X-1,
+		      project(X1,Y,L).*/
 %This basically just traverses Y X times. It'll trigger the second base case if
 %it can't be done, and third if it can.
 
-project([H|X],Y,L) :- H1 is H - 1, 
-		      project([H1|X],Y,L), 
-		      project(X,Y,L).
 %The head of X gets subtracted by one and sent in to itself to use
 %the above 2 clauses, then it goes to the next head on the tail.
 %It will trigger the first base case.
-

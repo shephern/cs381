@@ -40,11 +40,11 @@ project([],_,_).
 project(0,[H|_],[H|_]).
 %Another base case. If X is 0, add the current head of Y to L.
 
-project(X,[_|Y],L) :- project(X-1,Y,L).
+project(X,[_|Y],L) :- X1 is X-1,project(X1,Y,L).
 %This basically just traverses Y X times. It'll trigger the second base case if
 %it can't be done, and third if it can.
 
-project([H|X],Y,[K|L]) :- project(H-1,Y,K), project(X,Y,L).
+project([H|X],Y,L) :- project(H,Y,L), project(X,Y,L).
 %The head of X gets subtracted by one and sent in to itself to use
 %the above 2 clauses, then it goes to the next head on the tail.
 %It will trigger the first base case.
