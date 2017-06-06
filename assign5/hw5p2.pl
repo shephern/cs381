@@ -18,7 +18,7 @@ rdup([H|L],M) :- member(H,M), rdup(L,M).
 flat([],_).
 %If left is empty, done.
 
-flat([H|L],F) :- flat(H,F), flat(L,F).
+flat([H|L],[G|F]) :- flat(H,G), flat(L,F).
 %If the left variable is a list, recurse for both the left and the right.
 
 flat(H,[H|_]).
@@ -40,7 +40,7 @@ project(X,[_|Y],L) :- project(X-1,Y,L).
 %This basically just traverses Y X times. It'll trigger the second base case if
 %it can't be done, and third if it can.
 
-project([H|X],Y,L) :- project(H-1,Y,L), project(X,Y,L).
+project([H|X],Y,[K|L]) :- project(H-1,Y,K), project(X,Y,L).
 %The head of X gets subtracted by one and sent in to itself to use
 %the above 2 clauses, then it goes to the next head on the tail.
 %It will trigger the first base case.
