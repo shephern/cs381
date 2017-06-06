@@ -31,8 +31,7 @@ project([],_,_).
 %Base cases, if either lists are empty, we're done.
 
 
-project([H|X],[Y|T],L) :- H1 is H - 1,
-		      project([H1|X],T,L,[Y|T]).
+project([H|X],[Y|T],L) :- project([H|X],T,L,[Y|T]).
 %Runs a helper 4-var function, with the 4th variable keeping the original list.
 
 
