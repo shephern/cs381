@@ -26,25 +26,19 @@ flat([I|_],M) :- flat(I,M).
 
 %c
 project(_,[],_,_).
+%This one is a bit longer because it only runs in the helper 4-var function.
 project([],_,_).
 %Base cases, if either lists are empty, we're done.
 
 
 project([H|X],[Y|T],L) :- H1 is H - 1,
 		      project([H1|X],T,L,[Y|T]).
+%Runs a helper 4-var function, with the 4th variable keeping the original list.
 
 project([1|X],[H|Y],[H|L],N) :- project(X,N,L).
-%Another base case. If X is 0, add the current head of Y to L.
+%Base case. If X is 1, append H to L, then go back to the original 3 var
+%variant sans the head of the first list.
 
 project([H|X],[J|Y],L,N) :- H1 is H - 1,
 														project([H1|X],Y,L,N).
-
-
-/*project([X|_],[_|Y],L) :- X1 is X-1,
-		      project(X1,Y,L).*/
-%This basically just traverses Y X times. It'll trigger the second base case if
-%it can't be done, and third if it can.
-
-%The head of X gets subtracted by one and sent in to itself to use
-%the above 2 clauses, then it goes to the next head on the tail.
-%It will trigger the first base case.
+%This traverses the head of the first list, subtracting 1 all the way down.
